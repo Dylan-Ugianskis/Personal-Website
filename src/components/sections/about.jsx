@@ -136,7 +136,7 @@ const About = () => {
             </p>
 
             <p>
-              Today, I leverage this dual expertise to bridge the gap between technical capabilities and business outcomes. Whether I'm prospecting or closing, I bring a builder's mindset to every deal—ensuring clients feel understood and confident.
+              Today, I leverage this dual expertise to bridge the gap between technical capabilities and business outcomes. Whether I'm prospecting or closing, I bring a builder's mindset to every deal-ensuring clients feel understood and confident.
             </p>
 
             <p>Core Competencies:</p>

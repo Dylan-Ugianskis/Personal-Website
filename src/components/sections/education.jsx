@@ -93,7 +93,7 @@ const Education = () => {
           <span className="icon">🛡️</span>
           <div>
             <strong>Security Authority</strong>
-            Background in Cyber Security means I don't just sell software; I understand compliance, risk, and secure architecture—answering your CTO's questions before they even ask.
+            Background in Cyber Security means I don't just sell software; I understand compliance, risk, and secure architecture-answering your CTO's questions before they even ask.
           </div>
         </div>
       </StyledContent>
