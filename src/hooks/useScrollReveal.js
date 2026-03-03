@@ -1,29 +1,38 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-const useScrollReveal = (ref, delay = 0) => {
-    useEffect(() => {
-        if (ref.current) {
-            const observer = new IntersectionObserver(
-                ([entry]) => {
-                    if (entry.isIntersecting) {
-                        setTimeout(() => {
-                            ref.current.classList.add('visible');
-                        }, delay);
-                        observer.unobserve(ref.current);
-                    }
-                },
-                {
-                    root: null,
-                    rootMargin: '0px',
-                    threshold: 0.25,
-                },
-            );
+export const useScrollReveal = (options = {}) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
 
-            observer.observe(ref.current);
-
-            return () => observer.disconnect();
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          if (options.once) {
+            observer.unobserve(entry.target);
+          }
+        } else if (!options.once) {
+          setIsVisible(false);
         }
-    }, [ref, delay]);
-};
+      },
+      {
+        threshold: options.threshold || 0.1,
+        rootMargin: options.rootMargin || '0px',
+      }
+    );
 
-export default useScrollReveal;
+    const currentRef = ref.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [options.once, options.threshold, options.rootMargin]);
+
+  return [ref, isVisible];
+};

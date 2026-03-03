@@ -1,0 +1,229 @@
+/* From Uiverse.io by ilkhoeri — heavily customized for 26 project cards */
+.rotator-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  min-height: 900px;
+}
+
+.rotator-inner {
+  --w: 420px;
+  --h: 600px;
+  --translateZ: calc((var(--w) + var(--h)) * 1.8);
+  --rotateX: -8deg;
+  --perspective: 2000px;
+  position: absolute;
+  width: var(--w);
+  height: var(--h);
+  top: 10%;
+  left: calc(50% - (var(--w) / 2));
+  z-index: 2;
+  transform-style: preserve-3d;
+  transform: perspective(var(--perspective));
+  animation: rotating 70s linear infinite;
+}
+
+/* Pause animation on hover */
+.rotator-inner:hover {
+  animation-play-state: paused;
+}
+
+@keyframes rotating {
+  from {
+    transform: perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(0);
+  }
+
+  to {
+    transform: perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(1turn);
+  }
+}
+
+.rotator-card {
+  position: absolute;
+  border: 1px solid rgba(var(--color-card), 0.4);
+  border-radius: 14px;
+  overflow: hidden;
+  inset: 0;
+  transform: rotateY(calc((360deg / var(--quantity)) * var(--index))) translateZ(var(--translateZ));
+  transform-style: preserve-3d;
+  background: linear-gradient(160deg,
+      rgba(var(--color-card), 0.08) 0%,
+      rgba(6, 9, 31, 0.95) 50%,
+      rgba(var(--color-card), 0.05) 100%);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.rotator-card:hover {
+  border-color: rgba(var(--color-card), 0.8);
+  box-shadow: 0 0 20px rgba(var(--color-card), 0.3),
+    inset 0 0 20px rgba(var(--color-card), 0.05);
+}
+
+/* ── Card Content Layout ────────────────────────── */
+.rotator-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  height: 100%;
+  padding: 36px 30px;
+  text-align: center;
+  transform: rotateY(180deg);
+}
+
+.rotator-icon {
+  font-size: 4.8rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 8px rgba(var(--color-card), 0.5));
+  margin-bottom: 10px;
+}
+
+.rotator-category {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.85;
+}
+
+.rotator-title {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.rotator-subtitle {
+  font-size: 1.35rem;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.rotator-status {
+  display: inline-block;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 6px 20px;
+  border-radius: 999px;
+  margin-top: 4px;
+}
+
+/* ── Tech Stack Icons ───────────────────────────── */
+.rotator-stack {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  width: 100%;
+}
+
+.rotator-stack-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px;
+  object-fit: contain;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.rotator-stack-icon:hover {
+  transform: scale(1.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.rotator-stack-more {
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ── Responsive adjustments ─────────────────────── */
+@media (min-width: 640px) {
+  .rotator-inner {
+    --w: 495px;
+    --h: 690px;
+  }
+
+  .rotator-icon {
+    font-size: 5.5rem;
+  }
+
+  .rotator-title {
+    font-size: 1.9rem;
+  }
+
+  .rotator-subtitle {
+    font-size: 1.5rem;
+  }
+
+  .rotator-stack-icon {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .rotator-inner {
+    --w: 570px;
+    --h: 780px;
+    --translateZ: calc((var(--w) + var(--h)) * 2.0);
+  }
+
+  .rotator-icon {
+    font-size: 6rem;
+  }
+
+  .rotator-category {
+    font-size: 1.3rem;
+  }
+
+  .rotator-title {
+    font-size: 2rem;
+  }
+
+  .rotator-subtitle {
+    font-size: 1.6rem;
+  }
+
+  .rotator-status {
+    font-size: 1.2rem;
+  }
+
+  .rotator-stack-icon {
+    width: 54px;
+    height: 54px;
+    padding: 8px;
+  }
+
+  .rotator-stack-more {
+    font-size: 1.1rem;
+  }
+}
