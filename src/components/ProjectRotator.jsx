@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import './ProjectRotator.css';
 import { myProjects } from '../constants';
 import ProjectDetails from './ProjectDetails';
@@ -23,7 +23,6 @@ const categoryColors = {
     "Vexxent Marketing": "45, 212, 191",
 };
 
-// Map tech stack names to available SVG/PNG logos
 const stackIcons = {
     "n8n": "/assets/logos/NPM.svg",
     "PostgreSQL": "/assets/logos/PostgresSQL.svg",
@@ -63,86 +62,131 @@ const stackIcons = {
     "Google Veo": "/assets/logos/Google Cloud.svg",
 };
 
-const MAX_ICONS = 4; // Show at most 4 icons per card
+const MAX_ICONS = 4;
+
+// Shared card body — used in both desktop and mobile views
+const CardContent = ({ project, color, status, icons, extraCount }) => (
+    <div className="rotator-card-content">
+        <div className="rotator-icon">{project.icon}</div>
+        <span className="rotator-category" style={{ color: `rgb(${color})` }}>
+            {project.category}
+        </span>
+        <h3 className="rotator-title">{project.title}</h3>
+        <p className="rotator-subtitle">{project.subtitle}</p>
+        <span
+            className="rotator-status"
+            style={{ background: status.bg, color: status.text }}
+        >
+            {status.label}
+        </span>
+        {icons.length > 0 && (
+            <div className="rotator-stack">
+                {icons.map((tech, i) => (
+                    <img
+                        key={i}
+                        src={stackIcons[tech]}
+                        alt={tech}
+                        title={tech}
+                        className="rotator-stack-icon"
+                    />
+                ))}
+                {extraCount > 0 && (
+                    <span className="rotator-stack-more">+{extraCount}</span>
+                )}
+            </div>
+        )}
+    </div>
+);
 
 const ProjectRotator = () => {
     const [selectedProject, setSelectedProject] = useState(null);
+    const [activeIndex, setActiveIndex] = useState(0);
+    const sliderRef = useRef(null);
+
+    const handleScroll = () => {
+        if (!sliderRef.current) return;
+        const { scrollLeft, clientWidth } = sliderRef.current;
+        const cardWidth = clientWidth * 0.8 + 12; // 80vw + gap
+        setActiveIndex(Math.round(scrollLeft / cardWidth));
+    };
 
     return (
-        <div className="rotator-wrapper min-h-[500px]">
-            <div className="rotator-inner" style={{ "--quantity": myProjects.length }}>
-                {myProjects.map((project, index) => {
-                    const color = categoryColors[project.category] || "142, 249, 252";
-                    const status = statusColors[project.status] || statusColors.built;
+        <>
+            {/* ── DESKTOP: 3D rotating carousel (hidden on mobile) ── */}
+            <div className="rotator-wrapper rotator-desktop">
+                <div className="rotator-inner" style={{ "--quantity": myProjects.length }}>
+                    {myProjects.map((project, index) => {
+                        const color = categoryColors[project.category] || "142, 249, 252";
+                        const status = statusColors[project.status] || statusColors.built;
+                        const icons = project.stack.filter(t => stackIcons[t]).slice(0, MAX_ICONS);
+                        const extraCount = project.stack.length - icons.length;
 
-                    // Get icons for this project's stack (only ones we have SVGs for)
-                    const icons = project.stack
-                        .filter(tech => stackIcons[tech])
-                        .slice(0, MAX_ICONS);
-                    const extraCount = project.stack.length - icons.length;
-
-                    return (
-                        <div
-                            key={project.id}
-                            className="rotator-card"
-                            style={{
-                                "--index": index,
-                                "--color-card": color
-                            }}
-                            onClick={() => setSelectedProject(project)}
-                        >
-                            <div className="rotator-card-content">
-                                {/* Glowing emoji icon */}
-                                <div className="rotator-icon">{project.icon}</div>
-
-                                {/* Category label */}
-                                <span
-                                    className="rotator-category"
-                                    style={{ color: `rgb(${color})` }}
-                                >
-                                    {project.category}
-                                </span>
-
-                                {/* Title */}
-                                <h3 className="rotator-title">{project.title}</h3>
-
-                                {/* Subtitle */}
-                                <p className="rotator-subtitle">{project.subtitle}</p>
-
-                                {/* Status badge */}
-                                <span
-                                    className="rotator-status"
-                                    style={{
-                                        background: status.bg,
-                                        color: status.text,
-                                    }}
-                                >
-                                    {status.label}
-                                </span>
-
-                                {/* Tech stack icons */}
-                                {icons.length > 0 && (
-                                    <div className="rotator-stack">
-                                        {icons.map((tech, i) => (
-                                            <img
-                                                key={i}
-                                                src={stackIcons[tech]}
-                                                alt={tech}
-                                                title={tech}
-                                                className="rotator-stack-icon"
-                                            />
-                                        ))}
-                                        {extraCount > 0 && (
-                                            <span className="rotator-stack-more">
-                                                +{extraCount}
-                                            </span>
-                                        )}
-                                    </div>
-                                )}
+                        return (
+                            <div
+                                key={project.id}
+                                className="rotator-card"
+                                style={{ "--index": index, "--color-card": color }}
+                                onClick={() => setSelectedProject(project)}
+                            >
+                                <CardContent
+                                    project={project}
+                                    color={color}
+                                    status={status}
+                                    icons={icons}
+                                    extraCount={extraCount}
+                                />
                             </div>
-                        </div>
-                    );
-                })}
+                        );
+                    })}
+                </div>
+            </div>
+
+            {/* ── MOBILE: horizontal snap-scroll card list (hidden on desktop) ── */}
+            <div className="rotator-mobile">
+                <div
+                    className="mobile-slider"
+                    ref={sliderRef}
+                    onScroll={handleScroll}
+                >
+                    {myProjects.map((project, index) => {
+                        const color = categoryColors[project.category] || "142, 249, 252";
+                        const status = statusColors[project.status] || statusColors.built;
+                        const icons = project.stack.filter(t => stackIcons[t]).slice(0, MAX_ICONS);
+                        const extraCount = project.stack.length - icons.length;
+
+                        return (
+                            <div
+                                key={project.id}
+                                className="mobile-card"
+                                style={{ "--color-card": color }}
+                                onClick={() => setSelectedProject(project)}
+                            >
+                                <CardContent
+                                    project={project}
+                                    color={color}
+                                    status={status}
+                                    icons={icons}
+                                    extraCount={extraCount}
+                                />
+                            </div>
+                        );
+                    })}
+                </div>
+
+                {/* Dot indicators */}
+                <div className="mobile-dots">
+                    {myProjects.map((_, i) => (
+                        <div
+                            key={i}
+                            className={`mobile-dot ${i === activeIndex ? 'active' : ''}`}
+                        />
+                    ))}
+                </div>
+
+                {/* Card counter */}
+                <p className="mobile-counter">
+                    {activeIndex + 1} / {myProjects.length}
+                </p>
             </div>
 
             {selectedProject && (
@@ -151,9 +195,8 @@ const ProjectRotator = () => {
                     closeModal={() => setSelectedProject(null)}
                 />
             )}
-        </div>
+        </>
     );
 };
 
 export default ProjectRotator;
-

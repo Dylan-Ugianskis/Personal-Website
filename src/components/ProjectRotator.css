@@ -1,4 +1,141 @@
 /* From Uiverse.io by ilkhoeri — heavily customized for 26 project cards */
+
+/* ── Layout switching ────────────────────────────── */
+.rotator-desktop {
+  display: none;
+}
+
+/* hidden on mobile */
+.rotator-mobile {
+  display: block;
+}
+
+/* shown on mobile  */
+
+@media (min-width: 768px) {
+  .rotator-desktop {
+    display: flex;
+  }
+
+  /* show 3D carousel on desktop */
+  .rotator-mobile {
+    display: none;
+  }
+
+  /* hide slider on desktop */
+}
+
+/* ── Mobile snap-scroll slider ───────────────────── */
+.rotator-mobile {
+  width: 100%;
+  padding: 12px 0 24px;
+}
+
+.mobile-slider {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 8px 10% 8px 10%;
+}
+
+.mobile-slider::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-card {
+  flex: 0 0 80vw;
+  max-width: 320px;
+  min-height: 440px;
+  scroll-snap-align: center;
+  border: 1px solid rgba(var(--color-card), 0.4);
+  border-radius: 18px;
+  background: linear-gradient(160deg,
+      rgba(var(--color-card), 0.1) 0%,
+      rgba(6, 9, 31, 0.96) 50%,
+      rgba(var(--color-card), 0.06) 100%);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  overflow: hidden;
+}
+
+.mobile-card:active {
+  transform: scale(0.97);
+  border-color: rgba(var(--color-card), 0.8);
+  box-shadow: 0 0 20px rgba(var(--color-card), 0.25);
+}
+
+/* On mobile the card-content doesn't need rotateY fix (no 3D parent) */
+.rotator-mobile .rotator-card-content {
+  transform: none;
+  justify-content: flex-start;
+  padding: 28px 22px;
+  gap: 10px;
+}
+
+.rotator-mobile .rotator-icon {
+  font-size: 3rem;
+  margin-bottom: 4px;
+}
+
+.rotator-mobile .rotator-category {
+  font-size: 0.7rem;
+}
+
+.rotator-mobile .rotator-title {
+  font-size: 1.1rem;
+}
+
+.rotator-mobile .rotator-subtitle {
+  font-size: 0.85rem;
+}
+
+.rotator-mobile .rotator-status {
+  font-size: 0.65rem;
+  padding: 4px 12px;
+}
+
+.rotator-mobile .rotator-stack-icon {
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+}
+
+/* Dot indicators */
+.mobile-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+  padding: 0 16px;
+}
+
+.mobile-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  transition: all 0.25s ease;
+}
+
+.mobile-dot.active {
+  background: rgba(255, 255, 255, 0.8);
+  width: 20px;
+}
+
+/* Counter */
+.mobile-counter {
+  text-align: center;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
 .rotator-wrapper {
   width: 100%;
   height: 100%;
